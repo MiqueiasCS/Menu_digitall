@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: db
+    image: postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=menu_digital
+    ports:
+      - 5432:5432
