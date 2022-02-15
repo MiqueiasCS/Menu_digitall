@@ -8,7 +8,7 @@ import {
 @Entity("bills")
 export class Bill {
   @PrimaryGeneratedColumn("uuid")
-  bill_id!: string;
+  id!: string;
 
   @UpdateDateColumn()
   bill_date!: Date;

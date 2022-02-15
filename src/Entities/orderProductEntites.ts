@@ -7,10 +7,6 @@ export class OrderProduct {
   @PrimaryGeneratedColumn("uuid")
   id!: number;
 
-  // order_id
-
-  // product_id
-
   @Column()
   product_quantity!: number;
 

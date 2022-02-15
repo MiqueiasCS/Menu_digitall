@@ -2,10 +2,10 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { Order } from "./orderEntites";
 
-@Entity("tables")
+@Entity("table")
 export class Table {
   @PrimaryGeneratedColumn("uuid")
-  table_id!: string;
+  id!: string;
 
   @Column({ unique: true })
   tableidentifier!: string;
