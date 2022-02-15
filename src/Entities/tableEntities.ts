@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { Order } from "./orderEntites";
 
@@ -13,6 +7,9 @@ export class Table {
   @PrimaryGeneratedColumn("uuid")
   table_id!: string;
 
+  @Column({ unique: true })
+  tableidentifier!: string;
+
   @OneToMany(() => Order, (order) => order.table)
-  tableidentifier!: Order[];
+  orders!: Order[];
 }

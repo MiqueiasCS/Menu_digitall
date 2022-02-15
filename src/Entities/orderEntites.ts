@@ -2,16 +2,18 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { OrderProduct } from "./orderProductEntites";
 
 import { Table } from "./tableEntities";
 
 @Entity("orders")
 export class Order {
   @PrimaryGeneratedColumn("uuid")
-  order_id!: string;
+  id!: string;
 
   @UpdateDateColumn()
   order_date!: Date;
@@ -19,6 +21,9 @@ export class Order {
   @Column()
   client!: string;
 
-  @ManyToOne(() => Table, (table) => table.tableidentifier)
+  @ManyToOne(() => Table, (table) => table.orders)
   table!: Table;
+
+  @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.order)
+  order_product!: OrderProduct[];
 }
