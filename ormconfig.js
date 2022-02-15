@@ -1,7 +1,7 @@
 const devEnv = {
   type: "postgres",
   host: 'localhost',
-  port: "5432",
+  port: "5431",
   database: 'menu_digital',
   username: 'admin',
   password: '12345',
