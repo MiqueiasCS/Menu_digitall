@@ -1,15 +1,21 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('products')
-export class Product {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
   @Column({ unique: true })
-  name!: string
+  email!: string
 
-  @Column("float")
-  price!: number
+  @Column({ unique: true })
+  username!: string
+
+  @Column()
+  password!: string
+
+  @Column({ default: false })
+  isAdm!: boolean
 
   @CreateDateColumn()
   created_at!: Date
