@@ -13,7 +13,7 @@ export const authentication = async (req: Request, res: Response, next: NextFunc
     if (err) {
       return next(new AppError('Invalid token', 401))
     } else {
-      req.auth = decoded.user.adm
+      req.auth = decoded.user.isAdm
       req.id = decoded.user.id
       return next()
     }
