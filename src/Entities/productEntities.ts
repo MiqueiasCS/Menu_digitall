@@ -1,19 +1,31 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity('products')
+import { OrderProduct } from "./orderProductEntites";
+
+@Entity("products")
 export class Product {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
   @Column({ unique: true })
-  name!: string
+  name!: string;
 
   @Column("float")
-  price!: number
+  price!: number;
 
   @CreateDateColumn()
-  created_at!: Date
-  
+  created_at!: Date;
+
   @UpdateDateColumn()
-  updated_at!: Date
+  updated_at!: Date;
+
+  @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.product)
+  order_product!: OrderProduct[];
 }
