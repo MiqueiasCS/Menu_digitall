@@ -21,7 +21,7 @@ export const createBillService = async (data: IBillProps) => {
     if (!billOrder) {
       throw new AppError("The Order does not exist", 404);
     }
-
+    billOrder.order_product[0];
     //   let finalPrice = billOrder.order_product.reduce((ac, item) => {
     //     return ac + item.product.price * item.product_quantity;
     //   }, 0);
