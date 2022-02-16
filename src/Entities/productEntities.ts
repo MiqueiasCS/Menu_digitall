@@ -20,6 +20,9 @@ export class Product {
   @Column("float")
   price!: number;
 
+  @Column({ default: true })
+  isAvailable!: boolean;
+
   @CreateDateColumn()
   created_at!: Date;
 
