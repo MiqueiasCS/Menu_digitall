@@ -6,8 +6,10 @@
   "author": "Arthur <arthur.linemburg@unesc.net>",
   "license": "MIT",
   "scripts": {
+    "start": "node dist/srv/server.js",
     "dev": "ts-node-dev src/server.ts",
-    "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev node_modules/typeorm/cli.js",
+    "build": "tsc"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
