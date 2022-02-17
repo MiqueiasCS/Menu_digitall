@@ -16,18 +16,18 @@ interface ICreateOrder {
   products: IProducts[];
 }
 
-const teste = async (list: any) => {
+const getOrderProductList = async (list: any) => {
   const orderProductRepository = getRepository(OrderProduct);
 
-  const maisumalista = [];
+  const orderProductlist = [];
 
   for (let i = 0; i < list.length; i++) {
-    let algumacoisa = await orderProductRepository.save(list[i]);
+    let orderProductsaved = await orderProductRepository.save(list[i]);
 
-    maisumalista.push(algumacoisa);
+    orderProductlist.push(orderProductsaved);
   }
 
-  return maisumalista;
+  return orderProductlist;
 };
 
 export const createOrderService = async (data: ICreateOrder) => {
@@ -73,9 +73,8 @@ export const createOrderService = async (data: ICreateOrder) => {
     return orderAtualProduct;
   });
 
-  // console.log(selectedProducts);
+  let orderProductList = await getOrderProductList(selectedProducts);
+  console.log(orderProductList);
 
-  let meusdeusmeajuda = await teste(selectedProducts);
-
-  console.log(meusdeusmeajuda);
+  return order;
 };
