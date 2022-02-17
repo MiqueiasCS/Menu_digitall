@@ -44,12 +44,6 @@ export const createOrderService = async (data: ICreateOrder) => {
 
   let productsList = await productsRepository.find();
 
-  // let order = await orderRepository.findOne({
-  //   where: { table: table },
-  //   relations: ["order_product", "table"],
-  // });
-
-  // if (!order) {
   let orderData = {
     table: table,
     client: data.client,
@@ -57,7 +51,6 @@ export const createOrderService = async (data: ICreateOrder) => {
 
   let order = orderRepository.create(orderData);
   await orderRepository.save(order);
-  // }
 
   let selectedProducts = data.products.map((item) => {
     let findProducts = productsList.filter(
@@ -78,52 +71,3 @@ export const createOrderService = async (data: ICreateOrder) => {
 
   return order;
 };
-
-// export const updateOrderService = async (data: ICreateOrder) => {
-//   const tableRepository = getRepository(Table);
-//   const orderRepository = getRepository(Order);
-//   const productsRepository = getRepository(Product);
-//   const orderProductRepository = getRepository(OrderProduct);
-
-//   let table = await tableRepository.findOne({ id: data.tableId });
-
-//   if (!table) {
-//     throw new AppError("Table not registered", 400);
-//   }
-
-//   let productsList = await productsRepository.find();
-
-//   let order = await orderRepository.findOne({
-//     where: { table: table },
-//     relations: ["order_product", "table"],
-//   });
-
-//   if (!order) {
-//     let orderData = {
-//       table: table,
-//       client: data.client,
-//     };
-
-//     order = orderRepository.create(orderData);
-//     await orderRepository.save(order);
-//   }
-
-//   let selectedProducts = data.products.map((item) => {
-//     let findProducts = productsList.filter(
-//       (product) => product.id === item.productId
-//     );
-
-//     let orderAtualProduct = orderProductRepository.create({
-//       product: findProducts[0],
-//       product_quantity: item.quantity,
-//       order: order,
-//     });
-
-//     return orderAtualProduct;
-//   });
-
-//   let orderProductList = await getOrderProductList(selectedProducts);
-//   console.log(orderProductList);
-
-//   return order;
-// };
