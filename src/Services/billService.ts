@@ -3,35 +3,105 @@ import { AppError } from "../Errors";
 import { Bill } from "../Entities/billEntities";
 import { Order } from "../Entities/orderEntites";
 import { OrderProduct } from "../Entities/orderProductEntites";
+import { Table } from "../Entities/tableEntities";
 
 interface IBillProps {
   orderId: string;
   formOfPayment: string;
 }
 
+let formattedOrders = (orderProductlist: any) => {
+  let orderProductList = [];
+  for (let i = 0; i < orderProductlist.length; i++) {
+    let productResponse = {
+      productId: orderProductlist[i].product.id,
+      product: orderProductlist[i].product.name,
+      price: orderProductlist[i].product.price,
+      quantity: orderProductlist[i].product_quantity,
+    };
+    orderProductList.push(productResponse);
+  }
+  return orderProductList;
+};
+
+const findBill = async (order: any) => {
+  const billRepository = getRepository(Bill);
+  const ordersProductRepository = getRepository(OrderProduct);
+
+  let bill = await billRepository.findOne({
+    where: { order },
+    relations: ["order"],
+  });
+
+  if (!bill) {
+    throw new AppError("There is no bill for this table", 400);
+  }
+
+  let orderProductlist = await ordersProductRepository.find({
+    where: { order },
+    relations: ["product"],
+    select: ["product", "product_quantity"],
+  });
+
+  const billResponse = {
+    billId: bill.id,
+    date: bill.bill_date,
+    orderId: order.id,
+    client: order.client,
+    finalPrice: bill.final_price,
+    formOfPayment: bill.form_of_payment,
+    orders: formattedOrders(orderProductlist),
+  };
+
+  return billResponse;
+};
+
+const listBills = async (orderList: any) => {
+  let billsList = [];
+  for (let index = 0; index < orderList.length; index++) {
+    let bill = await findBill(orderList[index]);
+    billsList.push(bill);
+  }
+  return billsList;
+};
+
+const getOrder = async (orderId: string) => {
+  const orderRepository = getRepository(Order);
+
+  let order = await orderRepository.findOne({
+    where: { id: orderId },
+    relations: ["table", "dispatched", "order_product"],
+  });
+
+  if (!order) {
+    throw new AppError("The Order does not exist", 404);
+  }
+
+  return order;
+};
+
+const getFinalPrice = async (order: any) => {
+  const ordersProductRepository = getRepository(OrderProduct);
+  const orderProductlist = await ordersProductRepository.find({
+    where: { order },
+    relations: ["product"],
+  });
+
+  let finalPrice = orderProductlist.reduce((ac, item) => {
+    return ac + item.product.price * item.product_quantity;
+  }, 0);
+
+  return finalPrice;
+};
+
 export const createBillService = async (data: IBillProps) => {
   const { orderId } = data;
+  const billRepository = getRepository(Bill);
 
   try {
-    const orderRepository = getRepository(Order);
-    let billOrder = await orderRepository.findOne({
-      where: { id: orderId },
-      relations: ["table", "dispatched", "order_product"],
-    });
+    let billOrder = await getOrder(orderId);
 
-    if (!billOrder) {
-      throw new AppError("The Order does not exist", 404);
-    }
-
-    const ordersProductRepository = getRepository(OrderProduct);
-    const orderProductlist = await ordersProductRepository.find({
-      where: { order: billOrder },
-      relations: ["product"],
-    });
-
-    let finalPrice = orderProductlist.reduce((ac, item) => {
-      return ac + item.product.price * item.product_quantity;
-    }, 0);
+    let finalPrice = await getFinalPrice(billOrder);
 
     let billData = {
       form_of_payment: data.formOfPayment,
@@ -39,11 +109,8 @@ export const createBillService = async (data: IBillProps) => {
       order: billOrder,
     };
 
-    const billRepository = getRepository(Bill);
     let bill = billRepository.create(billData);
     await billRepository.save(bill);
-
-    console.log(bill);
 
     return bill;
   } catch (err) {
@@ -51,44 +118,39 @@ export const createBillService = async (data: IBillProps) => {
   }
 };
 
-export const GetBillService = async (data: IBillProps) => {
-  const { orderId } = data;
-  const billRepository = getRepository(Bill);
+export const GetBillService = async (orderId: string) => {
   const orderRepository = getRepository(Order);
-  const ordersProductRepository = getRepository(OrderProduct);
 
   try {
-    let order = await orderRepository.findOne({
-      where: { id: orderId },
+    let order = getOrder(orderId);
+
+    let billResponse = findBill(order);
+
+    return billResponse;
+  } catch (err) {
+    throw new AppError((err as any).message, 400);
+  }
+};
+
+export const GetTableBillsService = async (tableId: string) => {
+  const tableRepository = getRepository(Table);
+  const orderRepository = getRepository(Order);
+
+  try {
+    let table = await tableRepository.findOne(tableId);
+
+    if (!table) {
+      throw new AppError("unregistered table", 400);
+    }
+
+    let orders = await orderRepository.find({
+      where: { table },
       relations: ["table", "dispatched", "order_product"],
     });
 
-    if (!order) {
-      throw new AppError("The Order does not exist", 404);
-    }
+    let bills = await listBills(orders);
 
-    let bill = await billRepository.findOne({ order });
-
-    if (!bill) {
-      throw new AppError("There is no bill for this table", 400);
-    }
-
-    let orderProductlist = await ordersProductRepository.find({
-      where: { order },
-      relations: ["product"],
-    });
-
-    const billResponse = {
-      billId: bill.id,
-      date: bill.bill_date,
-      orderId: order.id,
-      client: order.client,
-      finalPrice: bill.final_price,
-      formOfPayment: bill.form_of_payment,
-      products: orderProductlist,
-    };
-
-    return bill;
+    return bills;
   } catch (err) {
     throw new AppError((err as any).message, 400);
   }
