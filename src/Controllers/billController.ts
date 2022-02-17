@@ -29,7 +29,7 @@ export const getBill = async (
 
     const bill = await GetBillService(orderId);
 
-    return res.status(201).json(bill);
+    return res.status(200).json(bill);
   } catch (err) {
     next(err);
   }
@@ -45,7 +45,7 @@ export const GetTableBills = async (
 
     const bills = await GetTableBillsService(tableId);
 
-    return res.status(201).json(bills);
+    return res.status(200).json(bills);
   } catch (err) {
     next(err);
   }

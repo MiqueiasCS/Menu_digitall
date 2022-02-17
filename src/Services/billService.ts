@@ -24,7 +24,7 @@ let formattedOrders = (orderProductlist: any) => {
   return orderProductList;
 };
 
-const findBill = async (order: any) => {
+const findBill = async (order: any, getASingleBill: boolean = false) => {
   const billRepository = getRepository(Bill);
   const ordersProductRepository = getRepository(OrderProduct);
 
@@ -34,7 +34,14 @@ const findBill = async (order: any) => {
   });
 
   if (!bill) {
-    throw new AppError("There is no bill for this table", 400);
+    if (getASingleBill) {
+      throw new AppError("There is no bill for this table", 400);
+    } else {
+      return {
+        orderID: order.id,
+        message: "There is no bill registered for this order",
+      };
+    }
   }
 
   let orderProductlist = await ordersProductRepository.find({
@@ -120,11 +127,10 @@ export const createBillService = async (data: IBillProps) => {
 
 export const GetBillService = async (orderId: string) => {
   const orderRepository = getRepository(Order);
-
   try {
-    let order = getOrder(orderId);
+    let order = await getOrder(orderId);
 
-    let billResponse = findBill(order);
+    let billResponse = findBill(order, true);
 
     return billResponse;
   } catch (err) {

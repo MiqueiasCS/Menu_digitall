@@ -4,8 +4,8 @@ import { createBill, getBill } from "../Controllers/billController";
 const router = Router();
 
 export const billRouter = () => {
-  router.post("", createBill);
-  router.get("/:orderId", getBill);
+  router.post("/bill", createBill);
+  router.get("/:orderId/bill", getBill);
 
   return router;
 };
