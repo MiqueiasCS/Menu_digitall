@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -9,4 +9,4 @@ services:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_DB=menu_digital
     ports:
-      - 5432:5432
+      - 5431:5432
