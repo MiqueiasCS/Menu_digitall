@@ -67,7 +67,6 @@ export const createOrderService = async (data: ICreateOrder) => {
   });
 
   let orderProductList = await getOrderProductList(selectedProducts);
-  console.log(orderProductList);
 
   return order;
 };

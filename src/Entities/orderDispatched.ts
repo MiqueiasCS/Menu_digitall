@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./orderEntites";
 
-@Entity("orders_dispatcheds")
+@Entity("orders_dispatched")
 export class OrderDispatched {
   @PrimaryGeneratedColumn("uuid")
-  id!: number;
+  id!: string;
 
   @Column()
   note!: string;
