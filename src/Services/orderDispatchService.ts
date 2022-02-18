@@ -3,91 +3,33 @@ import { AppError } from "../Errors";
 import { Order } from "../Entities/orderEntites";
 import { OrderDispatched } from "../Entities/orderDispatched";
 import { Table } from "../Entities/tableEntities";
-import { OrderProduct } from "../Entities/orderProductEntites";
+import { IDispatchProps } from "../Types";
+import { getOrdersResponse, listDispactchedOrdersByTable } from "../utils";
 
-interface IDataProps {
-  orderId: string;
-  note?: string;
-}
-
-const getProductResponse = async (order: any) => {
-  const orderProductRepository = getRepository(OrderProduct);
-  let orderProduct = await orderProductRepository.find({
-    where: { order },
-    relations: ["product"],
-  });
-
-  let productsData = orderProduct.map((item) => {
-    return {
-      name: item.product.name,
-      price: item.product.price,
-      quantity: item.product_quantity,
-    };
-  });
-
-  return productsData;
-};
-
-const getOrdersResponse = async (ordersList: any) => {
-  let orderDispatchResponse = [];
-  for (let index = 0; index < ordersList.length; index++) {
-    let order = ordersList[index].order;
-    let client = ordersList[index].order.client;
-    let note = ordersList[index].note;
-    let orderDispatchId = ordersList[index].id;
-    let isProcessed = ordersList[index].processed;
-
-    let productList = await getProductResponse(order);
-
-    let orderDispatchData = {
-      orderDispatchId,
-      client,
-      isProcessed,
-      note,
-      productList,
-    };
-
-    orderDispatchResponse.push(orderDispatchData);
-  }
-
-  return orderDispatchResponse;
-};
-
-const listDispactchedOrdersByTable = async (tableOrderList: any) => {
-  const orderDispatchedRepository = getRepository(OrderDispatched);
-  let orderDispatchListResponse = [];
-
-  for (let index = 0; index < tableOrderList.length; index++) {
-    let orderDispatched = await orderDispatchedRepository.find({
-      where: { order: tableOrderList[index] },
-      relations: ["order"],
-    });
-    let orderDispatchResponse = await getOrdersResponse(orderDispatched);
-
-    if (orderDispatchResponse.length > 0) {
-      orderDispatchListResponse.push({
-        orderId: tableOrderList[index].id,
-        content: orderDispatchResponse,
-      });
-    }
-  }
-
-  return orderDispatchListResponse;
-};
-
-export const createOrderDispatchService = async (data: IDataProps) => {
+export const createOrderDispatchService = async (data: IDispatchProps) => {
   const orderRepository = getRepository(Order);
   const orderDispatchedRepository = getRepository(OrderDispatched);
 
-  const order = await orderRepository.findOne(data.orderId);
+  const order = await orderRepository.findOne({
+    where: { id: data.orderId },
+    relations: ["table"],
+  });
 
   if (!order) {
     throw new AppError("the order does not exist", 400);
   }
 
+  if (order.table.tableidentifier !== data.tableidentifier) {
+    throw new AppError(
+      `The order does not belong to ${data.tableidentifier}`,
+      400
+    );
+  }
+
   let orderDispatched = orderDispatchedRepository.create({
     order: order,
     note: data.note,
+    tableidentifier: data.tableidentifier,
   });
 
   await orderDispatchedRepository.save(orderDispatched);
@@ -163,21 +105,3 @@ export const getOrderDispatchListByTableService = async (tableId: string) => {
 
   return responseData;
 };
-
-// export const getOrderDispatchPerOrderService = async (orderId: string) => {
-//   const orderRepository = getRepository(Order);
-//   const orderDispatchedRepository = getRepository(OrderDispatched);
-
-//   const order = await orderRepository.findOne(orderId);
-
-//   if (!order) {
-//     throw new AppError("the order does not exist", 400);
-//   }
-
-//   let orderDispatched = await orderDispatchedRepository.find({
-//     where: { order },
-//     relations: ["order"],
-//   });
-
-//   return orderDispatched;
-// };

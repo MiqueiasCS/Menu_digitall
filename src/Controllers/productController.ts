@@ -14,8 +14,7 @@ export const createProduct = async (
   next: NextFunction
 ) => {
   try {
-    // const product = await createProductService(req.body, req.auth)
-    const product = await createProductService(req.body, true);
+    const product = await createProductService(req.body, req.auth);
 
     return res.status(201).json(product);
   } catch (err) {

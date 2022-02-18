@@ -4,31 +4,8 @@ import { Order } from "../Entities/orderEntites";
 import { Product } from "../Entities/productEntities";
 import { OrderProduct } from "../Entities/orderProductEntites";
 import { AppError } from "../Errors";
-
-interface IProducts {
-  productId: string;
-  quantity: number;
-}
-
-interface ICreateOrder {
-  tableId: string;
-  client: string;
-  products: IProducts[];
-}
-
-const getOrderProductList = async (list: any) => {
-  const orderProductRepository = getRepository(OrderProduct);
-
-  const orderProductlist = [];
-
-  for (let i = 0; i < list.length; i++) {
-    let orderProductsaved = await orderProductRepository.save(list[i]);
-
-    orderProductlist.push(orderProductsaved);
-  }
-
-  return orderProductlist;
-};
+import { ICreateOrder } from "../Types";
+import { getOrderProductList } from "../utils";
 
 export const createOrderService = async (data: ICreateOrder) => {
   const tableRepository = getRepository(Table);
@@ -66,7 +43,7 @@ export const createOrderService = async (data: ICreateOrder) => {
     return orderAtualProduct;
   });
 
-  let orderProductList = await getOrderProductList(selectedProducts);
+  await getOrderProductList(selectedProducts);
 
   return order;
 };

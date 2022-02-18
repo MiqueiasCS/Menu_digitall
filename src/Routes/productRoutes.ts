@@ -12,8 +12,12 @@ import {
 const router = Router();
 
 export const productRouter = () => {
-  router.post("", validateDataSchema(productSchema), createProduct);
-  // router.post('', authentication, validateDataSchema(productSchema), createProduct)
+  router.post(
+    "",
+    authentication,
+    validateDataSchema(productSchema),
+    createProduct
+  );
   router.get("/:id", getProductById);
   router.get("", getAllProducts);
   router.patch("/:id", authentication, updateProductStatus);

@@ -4,11 +4,7 @@ import { Bill } from "../Entities/billEntities";
 import { Order } from "../Entities/orderEntites";
 import { OrderProduct } from "../Entities/orderProductEntites";
 import { Table } from "../Entities/tableEntities";
-
-interface IBillProps {
-  orderId: string;
-  formOfPayment: string;
-}
+import { IBillProps } from "../Types";
 
 let formattedOrders = (orderProductlist: any) => {
   let orderProductList = [];

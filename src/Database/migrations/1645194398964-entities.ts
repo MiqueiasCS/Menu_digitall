@@ -1,12 +1,12 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class entities1645150719191 implements MigrationInterface {
-    name = 'entities1645150719191'
+export class entities1645194398964 implements MigrationInterface {
+    name = 'entities1645194398964'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "products" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "price" double precision NOT NULL, "available" boolean NOT NULL DEFAULT true, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_4c9fb58de893725258746385e16" UNIQUE ("name"), CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "orders_products" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "product_quantity" integer NOT NULL, "productId" uuid, "orderId" uuid, CONSTRAINT "PK_4945c6758fd65ffacda760b4ac9" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "orders_dispatched" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "note" character varying NOT NULL, "processed" boolean NOT NULL DEFAULT false, "orderId" uuid, CONSTRAINT "PK_b5915925e54182d30b7910d8a0a" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "orders_dispatched" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "note" character varying NOT NULL, "tableidentifier" character varying NOT NULL, "processed" boolean NOT NULL DEFAULT false, "orderId" uuid, CONSTRAINT "PK_b5915925e54182d30b7910d8a0a" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "table" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "tableidentifier" character varying NOT NULL, CONSTRAINT "UQ_01f317097c1b15fa21ed5e710d0" UNIQUE ("tableidentifier"), CONSTRAINT "PK_28914b55c485fc2d7a101b1b2a4" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "orders" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "order_date" TIMESTAMP NOT NULL DEFAULT now(), "client" character varying NOT NULL, "tableId" uuid, CONSTRAINT "PK_710e2d4957aa5878dfe94e4ac2f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "bills" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "bill_date" TIMESTAMP NOT NULL DEFAULT now(), "form_of_payment" character varying NOT NULL, "final_price" double precision NOT NULL, "orderId" uuid, CONSTRAINT "REL_8b07afbe724f329c2a65c387c3" UNIQUE ("orderId"), CONSTRAINT "PK_a56215dfcb525755ec832cc80b7" PRIMARY KEY ("id"))`);

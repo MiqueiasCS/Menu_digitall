@@ -9,6 +9,9 @@ export class OrderDispatched {
   @Column()
   note!: string;
 
+  @Column()
+  tableidentifier!: string;
+
   @Column({ default: false })
   processed!: boolean;
 

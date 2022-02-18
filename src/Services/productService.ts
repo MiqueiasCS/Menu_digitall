@@ -69,7 +69,7 @@ export const getAllProductsByOrderService = async (orderType: string) => {
   const productRepository = getRepository(Product);
   if (orderType === "ASC" || orderType === "DESC") {
     const products = await productRepository.find({
-      select: ["name", "price"],
+      select: ["id", "name", "price"],
       where: {
         available: true,
       },
@@ -90,7 +90,7 @@ export const getAllProductsByPriceOrderService = async (orderPrice: number) => {
 
   if (orderPrice <= 10) {
     products = await productRepository.find({
-      select: ["name", "price"],
+      select: ["id", "name", "price"],
       where: {
         available: true,
         price: LessThanOrEqual(orderPrice),
@@ -98,7 +98,7 @@ export const getAllProductsByPriceOrderService = async (orderPrice: number) => {
     });
   } else if (orderPrice > 10 && orderPrice <= 50) {
     products = await productRepository.find({
-      select: ["name", "price"],
+      select: ["id", "name", "price"],
       where: {
         available: true,
         price: Between(10, 50),
@@ -106,7 +106,7 @@ export const getAllProductsByPriceOrderService = async (orderPrice: number) => {
     });
   } else if (orderPrice > 50) {
     products = await productRepository.find({
-      select: ["name", "price"],
+      select: ["id", "name", "price"],
       where: {
         available: true,
         price: MoreThan(orderPrice),
