@@ -6,6 +6,7 @@ import {
   getAllTable,
   getTableByName,
 } from "../Controllers/tableController";
+import { CreatePaymentConfirmation } from "../Controllers/paymentConfirmationController";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ export const tableRouter = () => {
   router.get("/:tableId/bills", GetTableBills);
   router.get("", getAllTable);
   router.get("/:tableidentifier", getTableByName);
+  router.post("/:tableId/paid", CreatePaymentConfirmation);
   return router;
 };

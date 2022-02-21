@@ -5,7 +5,7 @@ import { Bill } from "../Entities/billEntities";
 import { Order } from "../Entities/orderEntites";
 import { AppError } from "../Errors";
 
-export const getOrderProductList = async (list: any) => {
+export const saveOrderProductList = async (list: any) => {
   const orderProductRepository = getRepository(OrderProduct);
 
   const orderProductlist = [];
