@@ -21,7 +21,7 @@ export class Product {
   price!: number;
 
   @Column({ default: true })
-  available!: boolean
+  available!: boolean;
 
   @CreateDateColumn()
   created_at!: Date;
@@ -30,7 +30,7 @@ export class Product {
   updated_at!: Date;
 
   @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.product, {
-    cascade: true
+    cascade: true,
   })
   order_product!: OrderProduct[];
 }
