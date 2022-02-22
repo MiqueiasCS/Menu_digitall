@@ -3,7 +3,10 @@ import { OrderProduct } from "../Entities/orderProductEntites";
 import { OrderDispatched } from "../Entities/orderDispatched";
 import { Bill } from "../Entities/billEntities";
 import { Order } from "../Entities/orderEntites";
+import { BillBackup } from "../Entities/billsBackupEntities";
+import { OrdersBackup } from "../Entities/ordersBackupEntities";
 import { AppError } from "../Errors";
+import { IBill, IOrdersBackup } from "../Types";
 
 export const saveOrderProductList = async (list: any) => {
   const orderProductRepository = getRepository(OrderProduct);
@@ -175,4 +178,69 @@ export const getFinalPrice = async (order: any) => {
   }, 0);
 
   return finalPrice;
+};
+
+export const list_orders = async (orders: any) => {
+  let orderList = [];
+
+  for (let index = 0; index < orders.length; index++) {
+    let order = await getOrder(orders[index].id);
+    orderList.push(order);
+  }
+  return orderList;
+};
+
+export const ordersBackup = async (order: IOrdersBackup) => {
+  const orderBackupRepository = getRepository(OrdersBackup);
+  let orderData = {
+    product: order.product,
+    price: order.price,
+    quantity: order.quantity,
+  };
+  let orderBackup = orderBackupRepository.create(orderData);
+
+  await orderBackupRepository.save(orderBackup);
+
+  return orderBackup;
+};
+
+export const getOrdersBackupList = async (billOrdersList: IOrdersBackup[]) => {
+  let ordersBackupList = [];
+
+  for (let index = 0; index < billOrdersList.length; index++) {
+    let order = await ordersBackup(billOrdersList[index]);
+
+    ordersBackupList.push(order);
+  }
+  return ordersBackupList;
+};
+
+export const registerBillBackup = async (bill: IBill) => {
+  const billBackupRepository = getRepository(BillBackup);
+
+  let orders = await getOrdersBackupList(bill.orders);
+
+  let billData = {
+    billDate: bill.date,
+    client: bill.client,
+    formOfPayment: bill.formOfPayment,
+    totalPaid: bill.finalPrice,
+    orders: orders,
+  };
+  let billBackup = billBackupRepository.create(billData);
+
+  await billBackupRepository.save(billBackup);
+
+  return billBackup;
+};
+
+export const registerBillsBackupList = async (bills: any) => {
+  let billsBackupList = [];
+
+  for (let index = 0; index < bills.length; index++) {
+    let bill = await registerBillBackup(bills[index] as IBill);
+
+    billsBackupList.push(bill);
+  }
+  return billsBackupList;
 };
