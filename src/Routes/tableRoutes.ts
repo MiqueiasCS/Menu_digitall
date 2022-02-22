@@ -6,11 +6,13 @@ import {
   getAllTable,
   getTableByName,
 } from "../Controllers/tableController";
+import { validateDataSchema } from "../Middlewares/validateDataSchema";
+import { tableSchema } from "../Schemas/tabelSchema";
 
 const router = Router();
 
 export const tableRouter = () => {
-  router.post("", authentication, createTable);
+  router.post("", authentication, validateDataSchema(tableSchema), createTable);
   router.get("/:tableId/bills", GetTableBills);
   router.get("", getAllTable);
   router.get("/:tableidentifier", getTableByName);
