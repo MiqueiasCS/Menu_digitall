@@ -7,6 +7,7 @@ export const createTableService = async (tableIdentifier: string) => {
 
   try {
     let table = tableRepository.create({ tableidentifier: tableIdentifier });
+    table.tableidentifier = tableIdentifier.toLowerCase();
 
     await tableRepository.save(table);
 

@@ -5,7 +5,6 @@ import { Order } from "../Entities/orderEntites";
 import { getOrder, getOrderProductListResponse, listBills } from "../utils";
 
 const list_orders = async (orders: any) => {
-  //   const ordersRepository = getRepository(Order);
   let orderList = [];
 
   for (let index = 0; index < orders.length; index++) {
@@ -36,6 +35,8 @@ export const createPaymentConfirmationService = async (
   tableidentifier: string
 ) => {
   const tableRepository = getRepository(Table);
+
+  tableidentifier = tableidentifier.toLowerCase();
 
   try {
     let table = await tableRepository.findOne({

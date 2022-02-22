@@ -15,6 +15,6 @@ export const tableRouter = () => {
   router.get("/:tableId/bills", GetTableBills);
   router.get("", getAllTable);
   router.get("/:tableidentifier", getTableByName);
-  router.post("/:tableId/paid", CreatePaymentConfirmation);
+  router.post("/:tableid/paid", CreatePaymentConfirmation);
   return router;
 };

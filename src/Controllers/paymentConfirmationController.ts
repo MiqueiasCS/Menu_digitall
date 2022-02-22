@@ -7,9 +7,8 @@ export const CreatePaymentConfirmation = async (
   next: NextFunction
 ) => {
   try {
-    const confirm = await createPaymentConfirmationService(
-      req.body.tableidentifier
-    );
+    let { tableidentifier } = req.params;
+    const confirm = await createPaymentConfirmationService(tableidentifier);
 
     return res.status(201).json(confirm);
   } catch (err) {
