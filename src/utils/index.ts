@@ -139,7 +139,7 @@ export const findBill = async (order: any, getASingleBill: boolean = false) => {
   return billResponse;
 };
 
-export const listBills = async (orderList: any) => {
+export const listBills = async (orderList: Order[]) => {
   let billsList = [];
   for (let index = 0; index < orderList.length; index++) {
     let bill = await findBill(orderList[index]);

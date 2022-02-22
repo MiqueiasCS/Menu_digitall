@@ -23,7 +23,7 @@ transport.use('compile', hbs(handlebarOption))
 
 export const mailOptions = (to: string[], subject: string, template: string, context: any) => {
   return {
-    from: 'arthur.linemburg@unesc.net',
+    from: 'cap-fabio-10@mail.com',
     to,
     subject,
     template,

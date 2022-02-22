@@ -1,7 +1,6 @@
 import { getRepository } from "typeorm";
 import { Table } from "../Entities/tableEntities";
 import { AppError } from "../Errors";
-import { Order } from "../Entities/orderEntites";
 import { getOrder, getOrderProductListResponse, listBills } from "../utils";
 
 const list_orders = async (orders: any) => {
