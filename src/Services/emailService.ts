@@ -1,6 +1,9 @@
 import nodemailer from 'nodemailer'
 import hbs, { NodemailerExpressHandlebarsOptions } from 'nodemailer-express-handlebars'
 import path from 'path'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",

@@ -13,6 +13,9 @@ export class OrderProduct {
   @ManyToOne(() => Product, (product) => product.order_product)
   product!: Product;
 
-  @ManyToOne(() => Order, (order) => order.order_product)
+  @ManyToOne(() => Order, (order) => order.order_product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   order!: Order;
 }

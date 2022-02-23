@@ -1,34 +1,9 @@
 import { getRepository } from "typeorm";
 import { Table } from "../Entities/tableEntities";
 import { AppError } from "../Errors";
-import { getOrder, getOrderProductListResponse, listBills } from "../utils";
-
-const list_orders = async (orders: any) => {
-  let orderList = [];
-
-  for (let index = 0; index < orders.length; index++) {
-    let order = await getOrder(orders[index].id);
-    orderList.push(order);
-  }
-  return orderList;
-};
-
-const list_products_per_order = async (orders: any) => {
-  const orderList = [];
-  for (let index = 0; index < orders.length; index++) {
-    let order = await getOrderProductListResponse(orders[index]);
-
-    let orderResponse = {
-      orderDate: orders[index].order_date,
-      orderId: orders[index].id,
-      client: orders[index].client,
-      table: orders[index].table.tableidentifier,
-      products: order,
-    };
-    orderList.push(orderResponse);
-  }
-  return orderList;
-};
+import { listBills, list_orders, registerBillsBackupList } from "../utils";
+import { clearOrderDataList } from "../utils";
+import { mailOptions, transport } from "./emailService";
 
 export const createPaymentConfirmationService = async (
   tableidentifier: string
@@ -47,9 +22,11 @@ export const createPaymentConfirmationService = async (
       throw new AppError("Table not registered", 400);
     }
 
-    let orderList = await list_orders(table.orders);
+    if (table.orders.length === 0) {
+      throw new AppError("There are no orders registered for this table", 400);
+    }
 
-    // let ordersListWithProducts = list_products_per_order(orderList);
+    let orderList = await list_orders(table.orders);
 
     let bills = await listBills(orderList);
 
@@ -58,8 +35,35 @@ export const createPaymentConfirmationService = async (
     if (unpaidList.length > 0) {
       return unpaidList;
     }
+    bills = bills.filter((item) => !item.hasOwnProperty("message"));
 
-    return bills;
+    const billData = await registerBillsBackupList(bills);
+
+    await clearOrderDataList(orderList);
+
+    billData.map(el => {
+      const options = mailOptions(
+        [`${el?.client}@mail.com`],
+        'Confirmação de pagamento',
+        'email',
+        {
+          name: el?.client,
+          total: el?.totalPaid,
+          nota_fiscal: el?.id,
+          orders: JSON.stringify(el?.orders)
+        }
+      )
+
+      transport.sendMail(options, (err, info) => {
+        if (err) {
+          return console.log(err)
+        } else {
+          console.log(info)
+        }
+      })
+    })
+
+    return { message: "payment confirmed!" };
   } catch (err) {
     throw new AppError((err as any).message, 400);
   }

@@ -36,3 +36,20 @@ export interface ICreateOrder {
   client: string;
   products: IOrderProducts[];
 }
+
+export interface IOrdersBackup {
+  productId: string;
+  product: string;
+  price: number;
+  quantity: number;
+}
+
+export interface IBill {
+  billId: string;
+  date: string;
+  orderId: string;
+  client: string;
+  finalPrice: number;
+  formOfPayment: string;
+  orders: IOrdersBackup[];
+}
