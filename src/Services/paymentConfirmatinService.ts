@@ -2,13 +2,12 @@ import { getRepository } from "typeorm";
 import { Table } from "../Entities/tableEntities";
 import { AppError } from "../Errors";
 import { listBills, list_orders, registerBillsBackupList } from "../utils";
-import { IBill } from "../Types";
 import { Bill } from "../Entities/billEntities";
 import { Order } from "../Entities/orderEntites";
 import { OrderProduct } from "../Entities/orderProductEntites";
 import { OrderDispatched } from "../Entities/orderDispatched";
 
-export const clearOrderProductDataList = async (orderProductList: any) => {
+const clearOrderProductDataList = async (orderProductList: any) => {
   const orderProductRepository = getRepository(OrderProduct);
 
   for (let index = 0; index < orderProductList.length; index++) {
@@ -19,9 +18,7 @@ export const clearOrderProductDataList = async (orderProductList: any) => {
   return "successfully deleted";
 };
 
-export const clearOrderDispatchedDataList = async (
-  orderDispatchedList: any
-) => {
+const clearOrderDispatchedDataList = async (orderDispatchedList: any) => {
   const orderDispatchedRepository = getRepository(OrderDispatched);
 
   for (let index = 0; index < orderDispatchedList.length; index++) {
@@ -32,7 +29,7 @@ export const clearOrderDispatchedDataList = async (
   return "successfully deleted";
 };
 
-export const clearOrderDataList = async (orderList: any) => {
+const clearOrderDataList = async (orderList: any) => {
   const orderRepository = getRepository(Order);
 
   for (let index = 0; index < orderList.length; index++) {
@@ -46,7 +43,7 @@ export const clearOrderDataList = async (orderList: any) => {
   return "successfully deleted";
 };
 
-export const clearBillDataList = async (billsList: any) => {
+const clearBillDataList = async (billsList: any) => {
   const billRepository = getRepository(Bill);
 
   for (let index = 0; index < billsList.length; index++) {
