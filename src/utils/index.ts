@@ -8,7 +8,7 @@ import { OrdersBackup } from "../Entities/ordersBackupEntities";
 import { AppError } from "../Errors";
 import { IBill, IOrdersBackup } from "../Types";
 
-export const saveOrderProductList = async (list: any) => {
+export const saveOrderProductList = async (list: OrderProduct[]) => {
   const orderProductRepository = getRepository(OrderProduct);
 
   const orderProductlist = [];
@@ -22,7 +22,7 @@ export const saveOrderProductList = async (list: any) => {
   return orderProductlist;
 };
 
-export const getOrderProductListResponse = async (order: any) => {
+export const getOrderProductListResponse = async (order: Order) => {
   const orderProductRepository = getRepository(OrderProduct);
   let orderProduct = await orderProductRepository.find({
     where: { order },
@@ -40,7 +40,7 @@ export const getOrderProductListResponse = async (order: any) => {
   return productsData;
 };
 
-export const getOrdersResponse = async (ordersList: any) => {
+export const getOrdersResponse = async (ordersList: OrderDispatched[]) => {
   let orderDispatchResponse = [];
   for (let index = 0; index < ordersList.length; index++) {
     let order = ordersList[index].order;
@@ -67,7 +67,7 @@ export const getOrdersResponse = async (ordersList: any) => {
   return orderDispatchResponse;
 };
 
-export const listDispactchedOrdersByTable = async (tableOrderList: any) => {
+export const listDispactchedOrdersByTable = async (tableOrderList: Order[]) => {
   const orderDispatchedRepository = getRepository(OrderDispatched);
   let orderDispatchListResponse = [];
 
@@ -89,7 +89,7 @@ export const listDispactchedOrdersByTable = async (tableOrderList: any) => {
   return orderDispatchListResponse;
 };
 
-export const formattedOrders = (orderProductlist: any) => {
+export const formattedOrders = (orderProductlist: OrderProduct[]) => {
   let orderProductList = [];
   for (let i = 0; i < orderProductlist.length; i++) {
     let productResponse = {
@@ -103,7 +103,10 @@ export const formattedOrders = (orderProductlist: any) => {
   return orderProductList;
 };
 
-export const findBill = async (order: any, getASingleBill: boolean = false) => {
+export const findBill = async (
+  order: Order,
+  getASingleBill: boolean = false
+) => {
   const billRepository = getRepository(Bill);
   const ordersProductRepository = getRepository(OrderProduct);
 
@@ -142,7 +145,7 @@ export const findBill = async (order: any, getASingleBill: boolean = false) => {
   return billResponse;
 };
 
-export const listBills = async (orderList: any) => {
+export const listBills = async (orderList: Order[]) => {
   let billsList = [];
   for (let index = 0; index < orderList.length; index++) {
     let bill = await findBill(orderList[index]);
@@ -166,7 +169,7 @@ export const getOrder = async (orderId: string) => {
   return order;
 };
 
-export const getFinalPrice = async (order: any) => {
+export const getFinalPrice = async (order: Order) => {
   const ordersProductRepository = getRepository(OrderProduct);
   const orderProductlist = await ordersProductRepository.find({
     where: { order },
@@ -180,7 +183,7 @@ export const getFinalPrice = async (order: any) => {
   return finalPrice;
 };
 
-export const list_orders = async (orders: any) => {
+export const list_orders = async (orders: Order[]) => {
   let orderList = [];
 
   for (let index = 0; index < orders.length; index++) {
@@ -234,7 +237,7 @@ export const registerBillBackup = async (bill: IBill) => {
   return billBackup;
 };
 
-export const registerBillsBackupList = async (bills: any) => {
+export const registerBillsBackupList = async (bills: IBill | any) => {
   let billsBackupList = [];
 
   for (let index = 0; index < bills.length; index++) {
@@ -243,4 +246,16 @@ export const registerBillsBackupList = async (bills: any) => {
     billsBackupList.push(bill);
   }
   return billsBackupList;
+};
+
+export const clearOrderDataList = async (orderList: Order[]) => {
+  const orderRepository = getRepository(Order);
+
+  for (let index = 0; index < orderList.length; index++) {
+    let orderId = orderList[index].id;
+
+    await orderRepository.delete(orderId);
+  }
+
+  return "successfully deleted";
 };

@@ -22,7 +22,10 @@ export class Bill {
   @Column("float")
   final_price!: number;
 
-  @OneToOne(() => Order)
+  @OneToOne(() => Order, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   order!: Order;
 }
