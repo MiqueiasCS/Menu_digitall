@@ -1,6 +1,9 @@
 import nodemailer from 'nodemailer'
 import hbs, { NodemailerExpressHandlebarsOptions } from 'nodemailer-express-handlebars'
 import path from 'path'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
@@ -23,7 +26,7 @@ transport.use('compile', hbs(handlebarOption))
 
 export const mailOptions = (to: string[], subject: string, template: string, context: any) => {
   return {
-    from: 'arthur.linemburg@unesc.net',
+    from: 'cap-fabio-10@mail.com',
     to,
     subject,
     template,

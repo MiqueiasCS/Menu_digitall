@@ -3,6 +3,7 @@ import { Table } from "../Entities/tableEntities";
 import { AppError } from "../Errors";
 import { listBills, list_orders, registerBillsBackupList } from "../utils";
 import { clearOrderDataList } from "../utils";
+import { mailOptions, transport } from "./emailService";
 
 export const createPaymentConfirmationService = async (
   tableidentifier: string
@@ -36,9 +37,31 @@ export const createPaymentConfirmationService = async (
     }
     bills = bills.filter((item) => !item.hasOwnProperty("message"));
 
-    await registerBillsBackupList(bills);
+    const billData = await registerBillsBackupList(bills);
 
     await clearOrderDataList(orderList);
+
+    billData.map(el => {
+      const options = mailOptions(
+        [`${el?.client}@mail.com`],
+        'Confirmação de pagamento',
+        'email',
+        {
+          name: el?.client,
+          total: el?.totalPaid,
+          nota_fiscal: el?.id,
+          orders: JSON.stringify(el?.orders)
+        }
+      )
+
+      transport.sendMail(options, (err, info) => {
+        if (err) {
+          return console.log(err)
+        } else {
+          console.log(info)
+        }
+      })
+    })
 
     return { message: "payment confirmed!" };
   } catch (err) {

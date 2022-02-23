@@ -237,7 +237,7 @@ export const registerBillBackup = async (bill: IBill) => {
   return billBackup;
 };
 
-export const registerBillsBackupList = async (bills: IBill | any) => {
+export const registerBillsBackupList = async (bills: IBill[] | any) => {
   let billsBackupList = [];
 
   for (let index = 0; index < bills.length; index++) {
