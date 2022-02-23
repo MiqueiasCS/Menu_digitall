@@ -14,4 +14,25 @@ const devEnv = {
   synchronize: false,
 };
 
-module.exports = devEnv;
+const prodEnv = {
+  type: 'postgres',
+  url: process.env.DATABASE_URL,
+  entities: ['./dist/Entities/**/*.js'],
+  migrations: ['./dist/Database/migrations/*.js'],
+  cli: {
+      migrationsDir: './dist/Database/migrations'
+  },
+  synchronize: true,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+
+}
+
+let exportModule
+
+if (process.env.NODE_ENV === 'production') {
+  exportModule = prodEnv
+} else {
+  exportModule = devEnv
+}
+
+module.exports = exportModule;
