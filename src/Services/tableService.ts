@@ -26,10 +26,16 @@ export const getAllTableService = async () => {
 
 export const getTableByNameService = async (tableIdentifier: string) => {
   const tableRepository = getRepository(Table);
+  tableIdentifier = tableIdentifier.toLowerCase();
+
   const table = await tableRepository.findOne({
     where: { tableidentifier: tableIdentifier },
     relations: ["orders"],
   });
+
+  if (!table) {
+    throw new AppError("Table not found", 404);
+  }
 
   return table;
 };
