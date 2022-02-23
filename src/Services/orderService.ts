@@ -5,7 +5,7 @@ import { Product } from "../Entities/productEntities";
 import { OrderProduct } from "../Entities/orderProductEntites";
 import { AppError } from "../Errors";
 import { ICreateOrder } from "../Types";
-import { getOrderProductList } from "../utils";
+import { saveOrderProductList } from "../utils";
 
 export const createOrderService = async (data: ICreateOrder) => {
   const tableRepository = getRepository(Table);
@@ -43,7 +43,7 @@ export const createOrderService = async (data: ICreateOrder) => {
     return orderAtualProduct;
   });
 
-  await getOrderProductList(selectedProducts);
+  await saveOrderProductList(selectedProducts);
 
   return order;
 };
