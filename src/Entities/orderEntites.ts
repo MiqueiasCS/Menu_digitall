@@ -24,13 +24,9 @@ export class Order {
   @ManyToOne(() => Table, (table) => table.orders)
   table!: Table;
 
-  @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.order, {
-    cascade: true,
-  })
+  @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.order)
   order_product!: OrderProduct[];
 
-  @OneToMany(() => OrderDispatched, (orderdispatch) => orderdispatch.order, {
-    cascade: true,
-  })
+  @OneToMany(() => OrderDispatched, (orderdispatch) => orderdispatch.order)
   dispatched!: OrderDispatched[];
 }
