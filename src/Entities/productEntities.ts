@@ -31,6 +31,7 @@ export class Product {
 
   @OneToMany(() => OrderProduct, (orderproduct) => orderproduct.product, {
     cascade: true,
+    onDelete: "CASCADE",
   })
   order_product!: OrderProduct[];
 }

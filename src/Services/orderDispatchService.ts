@@ -12,14 +12,18 @@ export const createOrderDispatchService = async (data: IDispatchProps) => {
 
   const order = await orderRepository.findOne({
     where: { id: data.orderId },
-    relations: ["table"],
+    relations: ["table", "dispatched"],
   });
 
   if (!order) {
-    throw new AppError("the order does not exist", 400);
+    throw new AppError("the order does not exist", 404);
   }
 
-  if (order.table.tableidentifier !== data.tableidentifier) {
+  if (order.dispatched.length > 0) {
+    throw new AppError("the order already registered", 400);
+  }
+
+  if (order.table.tableidentifier !== data.tableidentifier.toLowerCase()) {
     throw new AppError(
       `The order does not belong to ${data.tableidentifier}`,
       400
@@ -29,7 +33,7 @@ export const createOrderDispatchService = async (data: IDispatchProps) => {
   let orderDispatched = orderDispatchedRepository.create({
     order: order,
     note: data.note,
-    tableidentifier: data.tableidentifier,
+    tableidentifier: data.tableidentifier.toLowerCase(),
   });
 
   await orderDispatchedRepository.save(orderDispatched);
