@@ -12,11 +12,15 @@ export const createOrderDispatchService = async (data: IDispatchProps) => {
 
   const order = await orderRepository.findOne({
     where: { id: data.orderId },
-    relations: ["table"],
+    relations: ["table", "dispatched"],
   });
 
   if (!order) {
-    throw new AppError("the order does not exist", 400);
+    throw new AppError("the order does not exist", 404);
+  }
+
+  if (order.dispatched.length > 0) {
+    throw new AppError("the order already registered", 400);
   }
 
   if (order.table.tableidentifier !== data.tableidentifier.toLowerCase()) {

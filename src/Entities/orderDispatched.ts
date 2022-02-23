@@ -6,7 +6,7 @@ export class OrderDispatched {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ default: "" })
   note!: string;
 
   @Column()
@@ -15,6 +15,9 @@ export class OrderDispatched {
   @Column({ default: false })
   processed!: boolean;
 
-  @ManyToOne(() => Order, (order) => order.dispatched)
+  @ManyToOne(() => Order, (order) => order.dispatched, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   order!: Order;
 }

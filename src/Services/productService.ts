@@ -1,10 +1,4 @@
-import {
-  Between,
-  getRepository,
-  LessThanOrEqual,
-  MoreThan,
-  MoreThanOrEqual,
-} from "typeorm";
+import { Between, getRepository, LessThanOrEqual, MoreThan } from "typeorm";
 import { Product } from "../Entities/productEntities";
 import { AppError } from "../Errors";
 import { IProductProps } from "../Types";

@@ -2,56 +2,7 @@ import { getRepository } from "typeorm";
 import { Table } from "../Entities/tableEntities";
 import { AppError } from "../Errors";
 import { listBills, list_orders, registerBillsBackupList } from "../utils";
-import { Bill } from "../Entities/billEntities";
-import { Order } from "../Entities/orderEntites";
-import { OrderProduct } from "../Entities/orderProductEntites";
-import { OrderDispatched } from "../Entities/orderDispatched";
-
-const clearOrderProductDataList = async (orderProductList: any) => {
-  const orderProductRepository = getRepository(OrderProduct);
-
-  for (let index = 0; index < orderProductList.length; index++) {
-    let orderProductId = orderProductList[index].id;
-
-    await orderProductRepository.delete(orderProductId);
-  }
-  return "successfully deleted";
-};
-
-const clearOrderDispatchedDataList = async (orderDispatchedList: any) => {
-  const orderDispatchedRepository = getRepository(OrderDispatched);
-
-  for (let index = 0; index < orderDispatchedList.length; index++) {
-    let orderDispatchedId = orderDispatchedList[index].id;
-
-    await orderDispatchedRepository.delete(orderDispatchedId);
-  }
-  return "successfully deleted";
-};
-
-const clearOrderDataList = async (orderList: any) => {
-  const orderRepository = getRepository(Order);
-
-  for (let index = 0; index < orderList.length; index++) {
-    let orderId = orderList[index].id;
-    await clearOrderProductDataList(orderList[index].order_product);
-    await clearOrderDispatchedDataList(orderList[index].dispatched);
-
-    await orderRepository.delete(orderId);
-  }
-
-  return "successfully deleted";
-};
-
-const clearBillDataList = async (billsList: any) => {
-  const billRepository = getRepository(Bill);
-
-  for (let index = 0; index < billsList.length; index++) {
-    let billId = billsList[index].billId;
-    await billRepository.delete(billId);
-  }
-  return "successfully deleted";
-};
+import { clearOrderDataList } from "../utils";
 
 export const createPaymentConfirmationService = async (
   tableidentifier: string
@@ -83,9 +34,10 @@ export const createPaymentConfirmationService = async (
     if (unpaidList.length > 0) {
       return unpaidList;
     }
+    bills = bills.filter((item) => !item.hasOwnProperty("message"));
 
     await registerBillsBackupList(bills);
-    await clearBillDataList(bills);
+
     await clearOrderDataList(orderList);
 
     return { message: "payment confirmed!" };
