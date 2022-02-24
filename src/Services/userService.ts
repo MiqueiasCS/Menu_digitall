@@ -19,10 +19,10 @@ export const createUserService = async (data: IUserProps) => {
 
       return user;
     } else {
-      throw new AppError("Email already exists", 400);
+      throw new AppError("Email already exists", 409);
     }
   } catch (err) {
-    throw new AppError((err as any).message, 400);
+    throw new AppError((err as any).message, (err as any).statusCode);
   }
 };
 
@@ -47,8 +47,10 @@ export const loginService = async (data: ILoginProps) => {
       });
 
       return token;
+    } else {
+      throw new AppError("Email not found", 404);
     }
   } catch (e) {
-    throw new AppError((e as any).message, 404);
+    throw new AppError((e as any).message, (e as any).statusCode);
   }
 };

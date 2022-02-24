@@ -34,6 +34,8 @@ export const createOrderService = async (data: ICreateOrder) => {
       (product) => product.id === item.productId
     );
 
+    if (findProducts.length === 0) throw new AppError("Product not found", 404);
+
     let orderAtualProduct = orderProductRepository.create({
       product: findProducts[0],
       product_quantity: item.quantity,
