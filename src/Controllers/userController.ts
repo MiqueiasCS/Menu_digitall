@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { createUserService, loginService } from '../Services/userService'
+import { createUserService, getDailyBalanceService, loginService } from '../Services/userService'
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,4 +25,17 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     next(err)
   }
 }
+
+export const getDailyBalance = async (req: Request, res: Response, next: NextFunction) => {
+  let date = req.query.date as string
+
+  try {
+    const managmentData = await getDailyBalanceService(date)
+    
+    return res.json(managmentData)
+  } catch (err) {
+    next(err)
+  }
+}
+
 
