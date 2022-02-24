@@ -1,9 +1,12 @@
 import { getRepository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { AppError } from "../Errors";
-import { ILoginProps, IUserProps } from "../Types";
+import { ILoginProps, IUserProps, ISellableQuantityProps } from "../Types";
 import { User } from "../Entities/userEntities";
 import jwt from "jsonwebtoken";
+import { BillBackup } from "../Entities/billsBackupEntities";
+import { getMostSellableProduct } from "../utils";
+import { getAllProductsService } from "./productService";
 
 export const createUserService = async (data: IUserProps) => {
   const { email } = data;
@@ -54,3 +57,43 @@ export const loginService = async (data: ILoginProps) => {
     throw new AppError((e as any).message, (e as any).statusCode);
   }
 };
+
+export const getDailyBalanceService = async (date: string) => {
+  const backupRepository = getRepository(BillBackup)
+
+  const backups = await backupRepository.find({
+    select: ["billDate", "totalPaid", "orders"],
+    relations: ["orders"]
+  })
+
+  let backupsByDate = backups.filter(el => el.billDate.includes(date))
+  let dailyBalance = backupsByDate.reduce((acc, cur) => acc + cur.totalPaid, 0)
+
+  let allProductsInfo = await getAllProductsService()
+  let products: string[] = []
+  allProductsInfo.map(el => products.push(el.name))
+
+  let sellableInfo: ISellableQuantityProps = {}
+
+  for (let i = 0; i < products.length; i++) {
+    sellableInfo[products[i]] = 0
+  }
+
+  backupsByDate.map(el => {
+    el.orders.map(elm => {
+      for (let i = 0; i < products.length; i++) {
+        if (elm.product === products[i]) {
+          sellableInfo[products[i]] += elm.quantity
+        }
+      }
+    })
+  })
+
+  let mostSellableProduct = getMostSellableProduct(sellableInfo)
+
+  return {
+    dailyBalance: `R$ ${dailyBalance}`,
+    bestSelling: mostSellableProduct,
+    allSoldProducts: sellableInfo
+  }
+}
