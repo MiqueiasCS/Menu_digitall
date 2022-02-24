@@ -6,7 +6,7 @@ import { Order } from "../Entities/orderEntites";
 import { BillBackup } from "../Entities/billsBackupEntities";
 import { OrdersBackup } from "../Entities/ordersBackupEntities";
 import { AppError } from "../Errors";
-import { IBill, IOrdersBackup } from "../Types";
+import { IBill, IOrdersBackup, ISellableQuantityProps } from "../Types";
 
 export const saveOrderProductList = async (list: OrderProduct[]) => {
   const orderProductRepository = getRepository(OrderProduct);
@@ -259,3 +259,12 @@ export const clearOrderDataList = async (orderList: Order[]) => {
 
   return "successfully deleted";
 };
+
+export const getMostSellableProduct = (obj: ISellableQuantityProps) => {
+  var mostSellable = Object.keys(obj).sort((a,b) => {
+    return obj[a] > obj[b] ? -1 :
+           obj[b] > obj[a] ? 1 : 0;
+  })[0];
+
+  return mostSellable
+}

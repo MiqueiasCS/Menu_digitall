@@ -53,3 +53,7 @@ export interface IBill {
   formOfPayment: string;
   orders: IOrdersBackup[];
 }
+
+export interface ISellableQuantityProps {
+  [name: string]: number
+}
