@@ -13,7 +13,7 @@ export const createTableService = async (tableIdentifier: string) => {
 
     return table;
   } catch (err) {
-    throw new AppError((err as any).message, 400);
+    throw new AppError((err as any).message, (err as any).statusCode);
   }
 };
 

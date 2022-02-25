@@ -41,9 +41,11 @@ export const getProductByIdService = async (id: string) => {
       }
     );
 
+    if (!product) throw new AppError("Product not found", 404);
+
     return product;
   } catch (err) {
-    throw new AppError("Product not found", 404);
+    throw new AppError((err as any).message, (err as any).statusCode);
   }
 };
 
